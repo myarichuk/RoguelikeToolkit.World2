@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Visualizer",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/RoguelikeToolkit.World2.Visualizer/bin/Debug/net10.0/RoguelikeToolkit.World2.Visualizer.dll",
+      "cwd": "${workspaceFolder}/src/RoguelikeToolkit.World2.Visualizer",
+      "stopAtEntry": false,
+      "console": "internalConsole"
+    },
+    {
+      "name": "Tests (attach-free run)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/tests/RoguelikeToolkit.World2.Core.Tests/bin/Debug/net10.0/RoguelikeToolkit.World2.Core.Tests.dll",
+      "cwd": "${workspaceFolder}/tests/RoguelikeToolkit.World2.Core.Tests",
+      "console": "internalConsole"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Version from tag
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_ENV"
+
+      - run: dotnet build -c Release -p:Version=$VERSION
+      - run: dotnet test -c Release --no-build
+
+      - name: Pack NuGet
+        run: dotnet pack src/RoguelikeToolkit.World2.Core -c Release --no-build -p:Version=$VERSION -o artifacts
+
+      - name: Push to NuGet
+        run: >
+          dotnet nuget push "artifacts/*.nupkg" --skip-duplicate
+          --source https://api.nuget.org/v3/index.json --api-key "${{ secrets.NUGET_API_KEY }}"
+
+      - name: Assemble Unity (OpenUPM) package
+        run: |
+          mkdir -p upm/Runtime
+          cp unity/package.json unity/Runtime.meta upm/
+          cp unity/Runtime/*.meta upm/Runtime/
+          cp LICENSE README.md upm/
+          cp src/RoguelikeToolkit.World2.Core/bin/Release/netstandard2.1/RoguelikeToolkit.World2.dll upm/Runtime/
+          jq --arg v "$VERSION" '.version = $v' upm/package.json > upm/package.tmp && mv upm/package.tmp upm/package.json
+          tar -czf "artifacts/com.myarichuk.roguelike-toolkit.world2-$VERSION.tgz" -C upm .
+
+      - name: Publish to upm branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan upm-release
+          git rm -rf --quiet . || true
+          cp -r upm/. .
+          git add package.json Runtime Runtime.meta LICENSE README.md
+          git commit -m "Unity package $VERSION"
+          git tag "upm/v$VERSION"
+          git push --force origin HEAD:refs/heads/upm "refs/tags/upm/v$VERSION"
+
+      - name: GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" artifacts/* --generate-notes

@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/RoguelikeToolkit.World2.sln", "/property:GenerateFullPaths=true", "/consoleloggerparameters:NoSummary"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "test",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["test", "--solution", "${workspaceFolder}/RoguelikeToolkit.World2.sln"],
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch tests",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["watch", "test", "--project", "${workspaceFolder}/tests/RoguelikeToolkit.World2.Core.Tests"],
+      "isBackground": true,
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "dotnet.defaultSolution": "RoguelikeToolkit.World2.sln",
+  "files.exclude": { "**/bin": true, "**/obj": true },
+  "dotnet.testWindow.useTestingPlatformProtocol": true
+}
