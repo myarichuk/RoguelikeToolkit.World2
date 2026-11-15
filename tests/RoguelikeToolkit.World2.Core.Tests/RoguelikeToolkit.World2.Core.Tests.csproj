@@ -8,6 +8,6 @@
     <ProjectReference Include="..\..\src\RoguelikeToolkit.World2.Core\RoguelikeToolkit.World2.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="xunit.v3" Version="4.0.2" />
+    <PackageReference Include="xunit.v3" Version="4.0.3" />
   </ItemGroup>
 </Project>
